@@ -49,11 +49,9 @@ class ShareHook(classLoader: ClassLoader) : BaseHook(classLoader) {
                     it[0] == "start_progress" -> "start_progress=${it[1]}&t=${it[1].toLong() / 1000}"
                     else -> null
                 }
-            }.joinToString("&", postfix = "&unique_k=2333")
+            }.joinToString("&")
             newUrl.encodedQuery(query)
-        } else {
-            newUrl.appendQueryParameter("unique_k", "2333")
-        }
+        } 
         return newUrl.build().toString()
     }
 
@@ -66,7 +64,7 @@ class ShareHook(classLoader: ClassLoader) : BaseHook(classLoader) {
             if (purifyShareEnabled) {
                 hookAfterMethod("getLink") { param ->
                     (param.result as? String)?.takeIf {
-                        it.startsWith("https://b23.tv") || it.startsWith("http://b23.tv")
+                        it.startsWith("https://b23.tv") || it.startsWith("http://b23.tv") || it.startsWith("http://bili2233.cn") || it.startsWith("https://bili2233.cn")
                     }?.let {
                         val targetUrl = Uri.parse(it).buildUpon().query("").build().toString()
                         param.result = targetUrl.resolveB23URL().also { r -> param.thisObject.setObjectField("link", r) }
@@ -79,7 +77,7 @@ class ShareHook(classLoader: ClassLoader) : BaseHook(classLoader) {
                     }?.let { contentUrl ->
                         val resolvedUrl = (param.thisObject.getObjectField("link")?.let { it as String } ?: contentUrl)
                             .let {
-                                if (it.startsWith("https://b23.tv") || it.startsWith("http://b23.tv"))
+                                if (it.startsWith("https://b23.tv") || it.startsWith("http://b23.tv") || it.startsWith("http://bili2233.cn") || it.startsWith("https://bili2233.cn"))
                                     it.resolveB23URL()
                                 else it
                             }
